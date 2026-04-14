@@ -16,15 +16,9 @@ export default async function handler(req, res) {
   try {
     const payload = req.body;
 
-    const API_KEY = process.env.INTERNAL_API_KEY;
-
     // validação mínima
     if (!payload || !payload.event_type) {
       return res.status(400).json({ error: "Invalid payload" });
-    }
-
-    if (req.headers["x-api-key"] !== API_KEY) {
-      return res.status(403).json({ error: "Forbidden" });
     }
 
     const response = await axios.post(process.env.RD_API_URL, payload, {
