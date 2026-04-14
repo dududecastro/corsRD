@@ -1,4 +1,4 @@
-import { sendToRD } from "../services/rdClient.js";
+import axios from "axios";
 
 export default async function handler(req, res) {
   res.setHeader("Access-Control-Allow-Origin", "*");
@@ -14,11 +14,20 @@ export default async function handler(req, res) {
   }
 
   try {
-    const result = await sendToRD(req.body);
+    const response = await axios.post(
+      "https://api.rd.services/platform/events",
+      req.body,
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${process.env.RD_API_TOKEN}`,
+        },
+      }
+    );
 
     return res.status(200).json({
       success: true,
-      data: result.data,
+      data: response.data,
     });
   } catch (error) {
     return res.status(500).json({
