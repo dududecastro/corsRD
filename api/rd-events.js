@@ -1,4 +1,4 @@
-import axios from "axios";
+import { sendToRD } from "../services/rdClient.js";
 
 export default async function handler(req, res) {
   res.setHeader("Access-Control-Allow-Origin", "*");
@@ -14,21 +14,12 @@ export default async function handler(req, res) {
   }
 
   try {
-    const payload = req.body;
+    const result = await sendToRD(req.body);
 
-    // validação mínima
-    if (!payload || !payload.event_type) {
-      return res.status(400).json({ error: "Invalid payload" });
-    }
-
-    const response = await axios.post(process.env.RD_API_URL, payload, {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${process.env.RD_API_TOKEN}`,
-      },
+    return res.status(200).json({
+      success: true,
+      data: result.data,
     });
-
-    return res.status(200).json(response.data);
   } catch (error) {
     return res.status(500).json({
       error: error.response?.data || error.message,
