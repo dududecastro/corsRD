@@ -1,7 +1,6 @@
 import axios from "axios";
 
 export default async function handler(req, res) {
-  // CORS
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
   res.setHeader("Access-Control-Allow-Headers", "Content-Type");
@@ -35,16 +34,10 @@ export default async function handler(req, res) {
       },
     });
 
-    return res.status(200).json({
-      success: true,
-      rd_response: response.data,
-    });
+    return res.status(200).json(response.data);
   } catch (error) {
-    console.error("RD ERROR:", error.response?.data || error.message);
-
     return res.status(500).json({
-      error: "Failed to send event",
-      details: error.response?.data || error.message,
+      error: error.response?.data || error.message,
     });
   }
 }
